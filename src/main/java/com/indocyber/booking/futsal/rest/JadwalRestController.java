@@ -41,7 +41,7 @@ public class JadwalRestController {
         return ResponseEntity.status(HttpStatus.OK).body(jadwalGridDTO);
     }
     @GetMapping("/{idJam}")
-    public ResponseEntity<Object> getJadwalById(@PathVariable Integer idJam){
+    public ResponseEntity<Object> getJadwalById(@Valid @PathVariable Integer idJam){
         JadwalGridDTO jadwalGridDTO = service.getJadwalById(idJam);
         return ResponseEntity.status(HttpStatus.OK).body(jadwalGridDTO);
     }
@@ -53,7 +53,7 @@ public class JadwalRestController {
     }
 
     @DeleteMapping("/{idJam}")
-    public ResponseEntity<Object> deleteJadwal(@PathVariable Integer idJam){
+    public ResponseEntity<Object> deleteJadwal(@Valid @PathVariable Integer idJam){
         service.delete(idJam);
         return ResponseEntity.status(HttpStatus.OK).body("Jadwal dengen id "+idJam+" berhasil terhapuus");
     }

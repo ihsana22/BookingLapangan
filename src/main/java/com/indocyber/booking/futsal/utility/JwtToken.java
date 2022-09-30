@@ -39,7 +39,7 @@ public class JwtToken {
                 .setIssuer("http://localhost:6060")
                 .setAudience(audience)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(new Date().getTime()+6000))
+                .setExpiration(new Date(new Date().getTime()+60000))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY);
 
         return builder.compact();

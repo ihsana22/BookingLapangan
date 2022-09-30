@@ -35,19 +35,19 @@ public class LapanganRestController {
     }
 
     @GetMapping("/{idLapangan}")
-    public ResponseEntity<Object> getLapanganById(@PathVariable Integer idLapangan){
+    public ResponseEntity<Object> getLapanganById(@Valid @PathVariable Integer idLapangan){
         LapanganGridDTO lapanganGridDTO = lapanganService.getLapanganById(idLapangan);
         return ResponseEntity.status(HttpStatus.OK).body(lapanganGridDTO);
     }
 
     @PutMapping("/update")
-    public ResponseEntity<Object> updateLapangan(@RequestBody LapanganGridDTO dto){
+    public ResponseEntity<Object> updateLapangan(@Valid @RequestBody LapanganGridDTO dto){
         LapanganGridDTO lapanganGridDTO = lapanganService.updateLapangan(dto);
         return ResponseEntity.status(HttpStatus.OK).body(lapanganGridDTO);
     }
 
     @DeleteMapping("/{idLapangan}")
-    public ResponseEntity<Object> delete(@PathVariable Integer idLapangan){
+    public ResponseEntity<Object> delete(@Valid @PathVariable Integer idLapangan){
         lapanganService.delete(idLapangan);
         return ResponseEntity.status(HttpStatus.OK).body("Lapangan dengan Id "+idLapangan+" Berhasil terhapus");
     }

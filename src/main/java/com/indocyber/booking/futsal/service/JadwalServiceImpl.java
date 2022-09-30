@@ -8,6 +8,7 @@ import com.indocyber.booking.futsal.dto.jadwal.UpdateJadwalDTO;
 import com.indocyber.booking.futsal.dto.utility.Helper;
 import com.indocyber.booking.futsal.entity.Jadwal;
 import com.indocyber.booking.futsal.entity.Lapangan;
+import com.indocyber.booking.futsal.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -48,10 +49,12 @@ public class JadwalServiceImpl implements JadwalService {
 
     @Override
     public JadwalGridDTO getJadwalById(Integer idJam) {
-        Optional<Jadwal> optionalJadwal = jadwalRepository.findById(idJam);
+       Optional<Jadwal> optionalJadwal = jadwalRepository.findById(idJam);
         Jadwal jadwal = null;
         if (optionalJadwal.isPresent()){
             jadwal=optionalJadwal.get();
+        }else {
+            throw new  NotFoundException("Id Not Found");
         }
         JadwalGridDTO jadwalGridDTO = new JadwalGridDTO(jadwal.getIdJam(), Helper.formatWaktu(jadwal.getJamMulai()),Helper.formatWaktu(jadwal.getJamSelesai()),Helper.formatRupiah(jadwal.getHargaSewa()));
         return jadwalGridDTO;
@@ -60,15 +63,24 @@ public class JadwalServiceImpl implements JadwalService {
     @Override
     public JadwalGridDTO updateJadwal(UpdateJadwalDTO dto) {
         Optional<Jadwal> optJadwal = jadwalRepository.findById(dto.getIdJam());
-        Jadwal jadwal = optJadwal.get();
-        jadwal.setHargaSewa(dto.getHargaSewa());
-        jadwalRepository.save(jadwal);
+
+        Jadwal jadwal = null;
+        if (optJadwal.isPresent()){
+            jadwal=optJadwal.get();
+            jadwal.setHargaSewa(dto.getHargaSewa());
+            jadwalRepository.save(jadwal);
+        }else {
+            throw new NotFoundException("Id Not Found");
+        }
         JadwalGridDTO jadwalGridDTO = new JadwalGridDTO(jadwal.getIdJam(),Helper.formatWaktu(jadwal.getJamMulai()),Helper.formatWaktu(jadwal.getJamSelesai()),Helper.formatRupiah(jadwal.getHargaSewa()));
         return jadwalGridDTO;
     }
 
     @Override
     public void delete(Integer idJam) {
-        jadwalRepository.deleteById(idJam);
+        if (jadwalRepository.findById(idJam).isPresent()){
+            jadwalRepository.deleteById(idJam);
+        }
+        throw new NotFoundException("Id Not Found");
     }
 }

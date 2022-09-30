@@ -4,6 +4,7 @@ import com.indocyber.booking.futsal.dao.LapanganRepository;
 import com.indocyber.booking.futsal.dto.lapangan.InsertLapanganDTO;
 import com.indocyber.booking.futsal.dto.lapangan.LapanganGridDTO;
 import com.indocyber.booking.futsal.entity.Lapangan;
+import com.indocyber.booking.futsal.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
@@ -39,6 +40,8 @@ public class LapanganServiceImpl implements LapanganService {
         Lapangan lapangan = null;
         if (optionalLapangan.isPresent()){
             lapangan= optionalLapangan.get();
+        }else {
+            throw new NotFoundException("Id Not Found");
         }
         LapanganGridDTO lapanganGridDTO =new LapanganGridDTO(lapangan.getLapanganId(),lapangan.getNamaLapangan(),lapangan.getJenisLapangan());
         return lapanganGridDTO;
@@ -50,16 +53,21 @@ public class LapanganServiceImpl implements LapanganService {
         Lapangan lapangan = null;
         if (optionalLapangan.isPresent()){
             lapangan=optionalLapangan.get();
+            lapangan.setJenisLapangan(dto.getJenisLapangan());
+            lapangan.setNamaLapangan(dto.getNamaLapangan());
+            lapanganRepository.save(lapangan);
+        }else {
+            throw new NotFoundException("id Not Found");
         }
-        lapangan.setJenisLapangan(dto.getJenisLapangan());
-        lapangan.setNamaLapangan(dto.getNamaLapangan());
-        lapanganRepository.save(lapangan);
+
         LapanganGridDTO lapanganGridDTO =new LapanganGridDTO(lapangan.getLapanganId(),lapangan.getNamaLapangan(),lapangan.getJenisLapangan());
         return lapanganGridDTO;
     }
 
     @Override
     public void delete(Integer idLapangan) {
-        lapanganRepository.deleteById(idLapangan);
+        if (lapanganRepository.findById(idLapangan).isPresent()){
+        lapanganRepository.deleteById(idLapangan);}
+        throw new NotFoundException("Id Not Found");
     }
 }
